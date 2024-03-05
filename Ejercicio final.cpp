@@ -13,7 +13,8 @@ void task1()
     static const uint32_t MAX_TIME = 40;
     static const uint32_t MIN_TIME = 1;
     static  uint32_t INTERVAL = 1000;
-    static char arreglo[5]; 
+    static char codigo[5] = {'c', '1', '2', '3', '4'};
+ 
 
     switch (task1state)
     {
@@ -101,7 +102,32 @@ void task1()
 bool typedCode()
 {
     
+    static char inputCode[5];
+    static int posicion = 0;
+
+    
+    if (Serial.available() > 0) {
+        char key = Serial.read();
+        if (isdigit(key)) {
+            inputCode[posicion++] = key;
+            Serial.print(key);
+        }
+        
+        else if (key == '\n' || key == '\r') {
+            if (strncmp(inputCode, codigo, sizeof(codigo)) == 0) {
+                memset(inputCode, 0, sizeof(inputCode));
+                posicion = 0;
+                return true;
+            } else {
+                memset(inputCode, 0, sizeof(inputCode));
+                posicion = 0;
+                return false;
+            }
+        }
+    }
+    return false;
 }
+
 
 void setup()
 {
