@@ -13,6 +13,7 @@ void task1()
     static const uint32_t MAX_TIME = 40;
     static const uint32_t MIN_TIME = 1;
     static  uint32_t INTERVAL = 1000;
+    static char arreglo[5]; 
 
     switch (task1state)
     {
