@@ -102,7 +102,7 @@ void task1()
 bool typedCode()
 {
     
-    static char inputCode[5];
+    static char inputCode[6];
     static int posicion = 0;
 
     
