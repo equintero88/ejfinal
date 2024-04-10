@@ -26,7 +26,7 @@ public class CodigoSimulador : MonoBehaviour
         _serialPort.PortName = "COM5";
         _serialPort.BaudRate = 115200;
         _serialPort.DtrEnable = true;
-        _serialPort.Open();
+        //_serialPort.Open();
         Debug.Log("Open Serial Port");
         material = GetComponent<SpriteRenderer>().material;
     }
