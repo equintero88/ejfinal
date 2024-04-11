@@ -53,7 +53,7 @@ public class CodigoSimulador : MonoBehaviour
         _serialPort.PortName = "COM5";
         _serialPort.BaudRate = 115200;
         _serialPort.DtrEnable = true;
-        //_serialPort.Open();
+        _serialPort.Open();
         Debug.Log("Open Serial Port");
         material = GetComponent<SpriteRenderer>().material;
     }
@@ -68,6 +68,22 @@ public class CodigoSimulador : MonoBehaviour
                 Debug.Log("WAIT COMMANDS");
                 break;
             case TaskState.COMMANDS:
+                if (Input.GetKeyDown(KeyCode.A))
+                {
+                    SubirLluvia();
+                }
+                if (Input.GetKeyDown(KeyCode.B))
+                {
+                    BajarLluvia();
+                }
+                if (Input.GetKeyDown(KeyCode.C))
+                {
+                    SubirTemperatura();
+                }
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    bajarTemperatura();
+                }
                 if (Input.GetKeyDown(KeyCode.D))
                 {
                     _serialPort.Write("timeUp\n");
