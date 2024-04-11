@@ -10,10 +10,37 @@ enum TaskState
     INIT,
     COMMANDS
 }
+enum TaskStateLluviaSubir
+{
+    INIT,
+    COMMANDS
+}
+
+enum TaskStateLluviaBajar
+{
+    INIT,
+    COMMANDS
+}
+
+enum TaskStateTemperaturaSubir
+{
+    INIT,
+    COMMANDS
+}
+
+enum TaskStateTemperaturaBajar
+{
+    INIT,
+    COMMANDS
+}
 
 public class CodigoSimulador : MonoBehaviour
 {
     private static TaskState taskState = TaskState.INIT;
+    private static TaskStateLluviaSubir taskState1 = TaskStateLluviaSubir.INIT;
+    private static TaskStateLluviaBajar taskState2 = TaskStateLluviaBajar.INIT;
+    private static TaskStateTemperaturaSubir taskState3 = TaskStateTemperaturaSubir.INIT;
+    private static TaskStateTemperaturaBajar taskState4 = TaskStateTemperaturaBajar.INIT;
     private SerialPort _serialPort = new SerialPort();
     private byte[] buffer = new byte[32];
     [SerializeField] private Vector2 velocidadMovimiento;
@@ -41,16 +68,6 @@ public class CodigoSimulador : MonoBehaviour
                 Debug.Log("WAIT COMMANDS");
                 break;
             case TaskState.COMMANDS:
-                if (Input.GetKeyDown(KeyCode.A))
-                {
-                    _serialPort.Write("rainUp\n");
-                    Debug.Log("Send ledON");
-                }
-                if (Input.GetKeyDown(KeyCode.S))
-                {
-                    _serialPort.Write("rainDown\n");
-                    Debug.Log("Send ledOFF");
-                }
                 if (Input.GetKeyDown(KeyCode.D))
                 {
                     _serialPort.Write("timeUp\n");
@@ -59,16 +76,6 @@ public class CodigoSimulador : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.F))
                 {
                     _serialPort.Write("timeDown\n");
-                    Debug.Log("Send readBUTTONS");
-                }
-                if (Input.GetKeyDown(KeyCode.G))
-                {
-                    _serialPort.Write("tempUp\n");
-                    Debug.Log("Send readBUTTONS");
-                }
-                if (Input.GetKeyDown(KeyCode.H))
-                {
-                    _serialPort.Write("tempDown\n");
                     Debug.Log("Send readBUTTONS");
                 }
                 if (Input.GetKeyDown(KeyCode.J))
@@ -81,36 +88,6 @@ public class CodigoSimulador : MonoBehaviour
                     _serialPort.Write("tempSpeedDown\n");
                     Debug.Log("Send readBUTTONS");
                 }
-                if (Input.GetKeyDown(KeyCode.L))
-                {
-                    _serialPort.Write("rainSpeedUp\n");
-                    Debug.Log("Send readBUTTONS");
-                }
-                if (Input.GetKeyDown(KeyCode.Z))
-                {
-                    _serialPort.Write("rainSpeedDown\n");
-                    Debug.Log("Send readBUTTONS");
-                }
-                if (Input.GetKeyDown(KeyCode.X))
-                {
-                    _serialPort.Write("tempUp\n");
-                    Debug.Log("Send readBUTTONS");
-                }
-                if (Input.GetKeyDown(KeyCode.C))
-                {
-                    _serialPort.Write("tempDown\n");
-                    Debug.Log("Send readBUTTONS");
-                }
-                if (Input.GetKeyDown(KeyCode.V))
-                {
-                    _serialPort.Write("rainUp\n");
-                    Debug.Log("Send readBUTTONS");
-                }
-                if (Input.GetKeyDown(KeyCode.B))
-                {
-                    _serialPort.Write("rainDown\n");
-                    Debug.Log("Send readBUTTONS");
-                }
                 if (Input.GetKeyDown(KeyCode.N))
                 {
                     _serialPort.Write("out\n");
@@ -121,6 +98,92 @@ public class CodigoSimulador : MonoBehaviour
                     _serialPort.Write("in\n");
                     Debug.Log("Send readBUTTONS");
                 }
+                if (_serialPort.BytesToRead > 0)
+                {
+                    string response = _serialPort.ReadLine();
+                    myText.text = response;
+                }
+                break;
+            default:
+                Debug.Log("State Error");
+                break;
+        }
+    }
+
+    public void SubirLluvia()
+    {
+        switch (taskState1)
+        {
+            case TaskStateLluviaSubir.INIT:
+                taskState1 = TaskStateLluviaSubir.COMMANDS;
+                Debug.Log("WAIT COMMANDS");
+                break;
+            case TaskStateLluviaSubir.COMMANDS:
+                _serialPort.Write("rainUp\n");
+                if (_serialPort.BytesToRead > 0)
+                {
+                    string response = _serialPort.ReadLine();
+                    myText.text = response;
+                }
+                break;
+            default:
+                Debug.Log("State Error");
+                break;
+        }
+    }
+    public void BajarLluvia()
+    {
+        switch (taskState2)
+        {
+            case TaskStateLluviaBajar.INIT:
+                taskState2 = TaskStateLluviaBajar.COMMANDS;
+                Debug.Log("WAIT COMMANDS");
+                break;
+            case TaskStateLluviaBajar.COMMANDS:
+                _serialPort.Write("rainDown\n");
+                if (_serialPort.BytesToRead > 0)
+                {
+                    string response = _serialPort.ReadLine();
+                    myText.text = response;
+                }
+                break;
+            default:
+                Debug.Log("State Error");
+                break;
+        }
+    }
+
+    public void SubirTemperatura()
+    {
+        switch (taskState3)
+        {
+            case TaskStateTemperaturaSubir.INIT:
+                taskState3 = TaskStateTemperaturaSubir.COMMANDS;
+                Debug.Log("WAIT COMMANDS");
+                break;
+            case TaskStateTemperaturaSubir.COMMANDS:
+                _serialPort.Write("tempUp\n");
+                if (_serialPort.BytesToRead > 0)
+                {
+                    string response = _serialPort.ReadLine();
+                    myText.text = response;
+                }
+                break;
+            default:
+                Debug.Log("State Error");
+                break;
+        }
+    }
+    public void bajarTemperatura()
+    {
+        switch (taskState4)
+        {
+            case TaskStateTemperaturaBajar.INIT:
+                taskState4 = TaskStateTemperaturaBajar.COMMANDS;
+                Debug.Log("WAIT COMMANDS");
+                break;
+            case TaskStateTemperaturaBajar.COMMANDS:
+                _serialPort.Write("tempDown\n");
                 if (_serialPort.BytesToRead > 0)
                 {
                     string response = _serialPort.ReadLine();

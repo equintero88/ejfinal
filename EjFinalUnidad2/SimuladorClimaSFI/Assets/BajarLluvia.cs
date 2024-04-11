@@ -5,11 +5,7 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
-enum TaskStateLluviaBajar
-{
-    INIT,
-    COMMANDS
-}
+
 
 public class BajarLluvia : MonoBehaviour
 {
