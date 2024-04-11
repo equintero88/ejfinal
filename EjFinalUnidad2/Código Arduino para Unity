@@ -1,0 +1,224 @@
+String rainState(uint8_t rainLevel) {
+    if (rainLevel == 0) {
+        return "No hay lluvia (0 mm/hora)";
+    }
+    else if (rainLevel == 1) {
+        return "Llovizna (2.5 mm/hora <)";
+    }
+    else if (rainLevel == 2) {
+        return "Lluvia constante no muy intensa (6 mm/hora)";
+    }
+    else if (rainLevel == 3)
+    {
+        return "LLuvia fuerte (12 mm/hora)";
+    }
+    else if (rainLevel == 4) {
+        return "Aguacero (20 mm/hora)";
+    }
+    else {
+        return "Valor de lluvia no válido";
+    }
+}
+
+String temperatureState(uint8_t temperature) {
+    if (temperature >= 14 && temperature <= 20) {
+        return "Frío";
+    }
+    else if (temperature >= 21 && temperature <= 26) {
+        return "Templado";
+    }
+    else if (temperature > 27 && temperature <= 32) {
+        return "Caluroso";
+    }
+    else {
+        return "Valor de temperatura no válido";
+    }
+}
+
+void advanceTime(uint8_t& hour, uint8_t& hourSpeed, uint8_t& temperature, uint8_t& rainLevel, bool& tempIncrease, bool& rainIncrease, uint8_t& tempChangeRate, uint8_t& rainChangeRate) {
+    hour = (hour + 1) % 24; // Incrementa la hora y asegura que no exceda 24
+    if (hour == 0) {
+        tempIncrease = true; // Reinicia la dirección del cambio de temperatura
+        rainIncrease = true; // Reinicia la dirección del cambio del nivel de lluvia
+    }
+
+    // Cambio automático de la temperatura
+    static uint32_t lastTempChangeTime = 0;
+    if (millis() - lastTempChangeTime >= tempChangeRate * 1000) {
+        lastTempChangeTime = millis();
+        if (tempIncrease) {
+            if (temperature < 32) {
+                temperature += tempChangeRate; // Incrementa la temperatura si no ha alcanzado el máximo
+            }
+            else {
+                temperature = 32; // Establece la temperatura en el máximo si ya lo alcanzó
+                tempIncrease = false; // Cambia la dirección del cambio de temperatura
+            }
+        }
+        else {
+            if (temperature > 14) {
+                temperature -= tempChangeRate; // Decrementa la temperatura si no ha alcanzado el mínimo
+            }
+            else {
+                temperature = 14; // Establece la temperatura en el mínimo si ya lo alcanzó
+                tempIncrease = true; // Cambia la dirección del cambio de temperatura
+            }
+        }
+    }
+
+    // Cambio automático del nivel de lluvia
+    static uint32_t lastRainChangeTime = 0;
+    if (millis() - lastRainChangeTime >= rainChangeRate * 1000) {
+        lastRainChangeTime = millis();
+        if (rainIncrease) {
+            if (rainLevel < 5) {
+                rainLevel += rainChangeRate; // Incrementa nivel de lluvia si no ha alcanzado el máximo
+            }
+            else {
+                rainLevel = 4; // Establece nivel de lluvia en el máximo si ya lo alcanzó
+                rainIncrease = false; // Cambia la dirección del cambio de nivel de lluvia
+            }
+        }
+        else {
+            if (rainLevel > 0) {
+                rainLevel -= rainChangeRate; // Decrementa nivel de lluvia si no ha alcanzado el mínimo
+            }
+            else {
+                rainLevel = 0; // Establece nivel de lluvia en el mínimo si ya lo alcanzó
+                rainIncrease = true; // Cambia la dirección del cambio de nivel de lluvia
+            }
+        }
+    }
+
+    delay(hourSpeed * 1000);
+}
+
+void task() {
+    enum class TaskStates {
+        INIT,
+        WAIT_COMMANDS,
+        OUT
+    };
+    static TaskStates taskState = TaskStates::INIT;
+    static uint8_t rainLevel = 0; // 0: No hay lluvia, 1: Lloviznando, 2: Lluvia fuerte
+    static uint8_t hourSpeed = 5; // Velocidad de cambio de hora (segundos por hora)
+    static uint8_t temperature = 20; // Temperatura inicial (grados Celsius)
+    static uint8_t hour = 0; // Hora del día en formato de 24 horas (0-23)
+    static bool ledState = false; // Estado del LED
+    static bool tempIncrease = true; // Dirección del cambio de temperatura (true: aumentar, false: disminuir)
+    static bool rainIncrease = true; // Dirección del cambio de nivel de lluvia (true: aumentar, false: disminuir)
+    // Velocidades de cambio de temperatura y nivel de lluvia (horas por cambio)
+    static uint8_t tempChangeRate = 1;
+    static uint8_t rainChangeRate = 1;
+
+    switch (taskState) {
+    case TaskStates::INIT: {
+        pinMode(LED_BUILTIN, OUTPUT);
+        Serial.begin(115200);
+        taskState = TaskStates::WAIT_COMMANDS;
+        /*Serial.println("Temperatura inicial: " + String(temperature) + "°C");
+        Serial.println("Nivel de lluvia inicial: " + rainState(rainLevel));
+        Serial.println("Hora inicial: 00:00");
+        Serial.print("Velocidad de cambio de hora inicial: ");
+        Serial.println("1 hora cada 5 segundos");*/
+        break;
+    }
+    case TaskStates::WAIT_COMMANDS: {
+        if (Serial.available() > 0) {
+            String command = Serial.readStringUntil('\n');
+            if (command == "timeUp") { //Aumento velocidad del tiempo
+                hourSpeed = min(hourSpeed + 1, 10);
+                //Serial.println("Velocidad de cambio de hora: " + String(hourSpeed) + " segundos por hora");
+            }
+            else if (command == "timeDown") {
+                hourSpeed = max(hourSpeed - 1, 0);
+                //Serial.println("Velocidad de cambio de hora: " + String(hourSpeed) + " segundos por hora");
+            }
+            else if (command == "tempSpeedUp") {
+                tempChangeRate = min(tempChangeRate + 1, 4); // Máximo 12 cambios por hora
+                //Serial.println("Velocidad de cambio de nivel de temperatura actualizada. Cambios por hora: " + String(tempChangeRate));
+            }
+            else if (command == "tempSpeedDown") {
+                tempChangeRate = max(tempChangeRate - 1, 0); // Mínimo 0 horas por cambio
+                //Serial.println("Velocidad de cambio de nivel de temperatura actualizada. Cambios por hora: " + String(tempChangeRate));
+            }
+            else if (command == "rainSpeedUp") {
+                rainChangeRate = min(rainChangeRate + 1, 2); // Máximo 2 cambios por hora
+                //Serial.println("Velocidad de cambio de nivel de lluvia actualizada. Cambios por hora: " + String(rainChangeRate));
+            }
+            else if (command == "rainSpeedDown") {
+                rainChangeRate = max(rainChangeRate - 1, 0); // Mínimo 0 horas por cambio
+                //Serial.println("Velocidad de cambio de nivel de lluvia actualizada. Cambios por hora: " + String(rainChangeRate));
+            }
+            else if (command == "tempUp") {
+                tempIncrease = true; // Aumentar temperatura
+                //Serial.println("Cambio de temperatura: Aumento");
+            }
+            else if (command == "tempDown") {
+                tempIncrease = false; // Disminuir temperatura
+                //Serial.println("Cambio de temperatura: Disminución");
+            }
+            else if (command == "rainUp") {
+                rainIncrease = true; // Aumentar nivel de lluvia
+                //Serial.println("Cambio de nivel de lluvia: Aumento");
+            }
+            else if (command == "rainDown") {
+                rainIncrease = false; // Disminuir nivel de lluvia
+                //Serial.println("Cambio de nivel de lluvia: Disminución");
+            }
+            else if (command == "out") {
+                taskState = TaskStates::OUT;
+            }
+            else {
+                //Serial.println("Comando no válido");
+            }
+        }
+
+        // Avance automático del tiempo y cambios de temperatura y nivel de lluvia
+        advanceTime(hour, hourSpeed, temperature, rainLevel, tempIncrease, rainIncrease, tempChangeRate, rainChangeRate);
+        /*Serial.print("Hora del día: ");
+        Serial.println(hour);
+        Serial.print("Temperatura: ");
+        Serial.print(temperature);
+        Serial.print("°C (");
+        Serial.print(temperatureState(temperature));
+        Serial.println(")");
+        Serial.println("Nivel de lluvia actual: " + rainState(rainLevel));*/
+        Serial.print(hourSpeed);
+        Serial.print('\n');
+        Serial.print(hour);
+        Serial.print('\n');
+        Serial.print(temperature);
+        Serial.print('\n');
+        Serial.print(rainLevel);
+        Serial.print('\n');
+;
+
+        ledState = !ledState;
+        digitalWrite(LED_BUILTIN, ledState); // Cambia el estado del LED incorporado
+
+        break;
+    }
+    case TaskStates::OUT:
+    {
+        String command = Serial.readStringUntil('\n');
+        Serial.println("Programa en espera");
+        if (command == "in")
+        {
+            taskState = TaskStates::WAIT_COMMANDS;
+        }
+        break;
+    }
+    default: {
+        break;
+    }
+    }
+}
+
+void setup() {
+    task();
+}
+
+void loop() {
+    task();
+}
