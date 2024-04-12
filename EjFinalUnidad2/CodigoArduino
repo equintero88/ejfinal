@@ -159,12 +159,32 @@ void task() {
                 Serial.println("Cambio de temperatura: Disminución");
             }
             else if (command == "rainUp") {
+              if(rainLevel <= 3){
+                  rainLevel++; // Aumentar nivel de lluvia
+                  Serial.println("Nivel de lluvia actual: " + rainState(rainLevel));
+                }
+                else{
+                    Serial.println("Ya llego al nivel máximo de lluvia: " + rainState(rainLevel));
+                  }
+                
+            }
+            else if (command == "rainDown") {
+              if(rainLevel >= 1){
+                  rainLevel--; // Disminuir nivel de lluvia
+                  Serial.println("Nivel de lluvia actual: " + rainState(rainLevel));
+                }
+                else{
+                    Serial.println("Ya llego al nivel mínimo de lluvia: " + rainState(rainLevel));
+                  }
+                
+            }
+            else if (command == "rainIncrease") {
                 rainIncrease = true; // Aumentar nivel de lluvia
                 Serial.println("Cambio de nivel de lluvia: Aumento");
             }
-            else if (command == "rainDown") {
-                rainIncrease = false; // Disminuir nivel de lluvia
-                Serial.println("Cambio de nivel de lluvia: Disminución");
+            else if (command == "rainDecrease") {
+                rainIncrease = false; // Aumentar nivel de lluvia
+                Serial.println("Cambio de nivel de lluvia: Aumento");
             }
             else if (command == "out") {
                 taskState = TaskStates::OUT;
