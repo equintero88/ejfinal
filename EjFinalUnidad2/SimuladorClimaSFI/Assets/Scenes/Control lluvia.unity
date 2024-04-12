@@ -488,9 +488,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SubirLluvia, Assembly-CSharp
-        m_MethodName: SubirNivel
+      - m_Target: {fileID: 1782618266}
+        m_TargetAssemblyTypeName: CodigoSimulador, Assembly-CSharp
+        m_MethodName: SubirLluvia
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -999,9 +999,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: BajarLluvia, Assembly-CSharp
-        m_MethodName: BajarNivel
+      - m_Target: {fileID: 1782618266}
+        m_TargetAssemblyTypeName: CodigoSimulador, Assembly-CSharp
+        m_MethodName: BajarLluvia
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1187,6 +1187,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocidadMovimiento: {x: 0, y: 0}
   myText: {fileID: 357115905}
+  escena:
+    m_Handle: 0
 --- !u!1 &2018130800
 GameObject:
   m_ObjectHideFlags: 0
