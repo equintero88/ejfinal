@@ -80,39 +80,41 @@ public class CodigoSimulador : MonoBehaviour
                 {
                     SubirTemperatura();
                 }
-                if (Input.GetKeyDown(KeyCode.E))
+                if (Input.GetKeyDown(KeyCode.D))
                 {
                     bajarTemperatura();
                 }
-                if (Input.GetKeyDown(KeyCode.D))
+                if (Input.GetKeyDown(KeyCode.E))
                 {
-                    _serialPort.Write("timeUp\n");
-                    Debug.Log("Send readBUTTONS");
+                    AumentoLluvia();
                 }
                 if (Input.GetKeyDown(KeyCode.F))
                 {
-                    _serialPort.Write("timeDown\n");
-                    Debug.Log("Send readBUTTONS");
+                    DecrementoLluvia();
+                }
+                if (Input.GetKeyDown(KeyCode.G))
+                {
+                    AumentoVelocidadLluvia();
+                }
+                if (Input.GetKeyDown(KeyCode.H))
+                {
+                    DecrementoVelocidadLluvia();
+                }
+                if (Input.GetKeyDown(KeyCode.I))
+                {
+                    AumentoTiempo();
                 }
                 if (Input.GetKeyDown(KeyCode.J))
                 {
-                    _serialPort.Write("tempSpeedUp\n");
-                    Debug.Log("Send readBUTTONS");
+                    DecrementoTiempo();
                 }
                 if (Input.GetKeyDown(KeyCode.K))
                 {
-                    _serialPort.Write("tempSpeedDown\n");
-                    Debug.Log("Send readBUTTONS");
+                    SubirVelocidadTemperatura();
                 }
-                if (Input.GetKeyDown(KeyCode.N))
+                if (Input.GetKeyDown(KeyCode.L))
                 {
-                    _serialPort.Write("out\n");
-                    Debug.Log("Send readBUTTONS");
-                }
-                if (Input.GetKeyDown(KeyCode.M))
-                {
-                    _serialPort.Write("in\n");
-                    Debug.Log("Send readBUTTONS");
+                    BajarVelocidadTemperatura();
                 }
                 if (_serialPort.BytesToRead > 0)
                 {
@@ -169,6 +171,137 @@ public class CodigoSimulador : MonoBehaviour
         }
     }
 
+    public void AumentoLluvia()
+    {
+        switch (taskState2)
+        {
+            case TaskStateLluviaBajar.INIT:
+                taskState2 = TaskStateLluviaBajar.COMMANDS;
+                Debug.Log("WAIT COMMANDS");
+                break;
+            case TaskStateLluviaBajar.COMMANDS:
+                _serialPort.Write("rainIncrease\n");
+                if (_serialPort.BytesToRead > 0)
+                {
+                    string response = _serialPort.ReadLine();
+                    myText.text = response;
+                }
+                break;
+            default:
+                Debug.Log("State Error");
+                break;
+        }
+    }
+    public void DecrementoLluvia()
+    {
+        switch (taskState2)
+        {
+            case TaskStateLluviaBajar.INIT:
+                taskState2 = TaskStateLluviaBajar.COMMANDS;
+                Debug.Log("WAIT COMMANDS");
+                break;
+            case TaskStateLluviaBajar.COMMANDS:
+                _serialPort.Write("rainDecrease\n");
+                if (_serialPort.BytesToRead > 0)
+                {
+                    string response = _serialPort.ReadLine();
+                    myText.text = response;
+                }
+                break;
+            default:
+                Debug.Log("State Error");
+                break;
+        }
+    }
+
+    public void AumentoVelocidadLluvia()
+    {
+        switch (taskState2)
+        {
+            case TaskStateLluviaBajar.INIT:
+                taskState2 = TaskStateLluviaBajar.COMMANDS;
+                Debug.Log("WAIT COMMANDS");
+                break;
+            case TaskStateLluviaBajar.COMMANDS:
+                _serialPort.Write("rainSpeedUp\n");
+                if (_serialPort.BytesToRead > 0)
+                {
+                    string response = _serialPort.ReadLine();
+                    myText.text = response;
+                }
+                break;
+            default:
+                Debug.Log("State Error");
+                break;
+        }
+    }
+
+    public void DecrementoVelocidadLluvia()
+    {
+        switch (taskState2)
+        {
+            case TaskStateLluviaBajar.INIT:
+                taskState2 = TaskStateLluviaBajar.COMMANDS;
+                Debug.Log("WAIT COMMANDS");
+                break;
+            case TaskStateLluviaBajar.COMMANDS:
+                _serialPort.Write("rainSpeedDown\n");
+                if (_serialPort.BytesToRead > 0)
+                {
+                    string response = _serialPort.ReadLine();
+                    myText.text = response;
+                }
+                break;
+            default:
+                Debug.Log("State Error");
+                break;
+        }
+    }
+
+    public void AumentoTiempo()
+    {
+        switch (taskState2)
+        {
+            case TaskStateLluviaBajar.INIT:
+                taskState2 = TaskStateLluviaBajar.COMMANDS;
+                Debug.Log("WAIT COMMANDS");
+                break;
+            case TaskStateLluviaBajar.COMMANDS:
+                _serialPort.Write("timeUp\n");
+                if (_serialPort.BytesToRead > 0)
+                {
+                    string response = _serialPort.ReadLine();
+                    myText.text = response;
+                }
+                break;
+            default:
+                Debug.Log("State Error");
+                break;
+        }
+    }
+
+    public void DecrementoTiempo()
+    {
+        switch (taskState2)
+        {
+            case TaskStateLluviaBajar.INIT:
+                taskState2 = TaskStateLluviaBajar.COMMANDS;
+                Debug.Log("WAIT COMMANDS");
+                break;
+            case TaskStateLluviaBajar.COMMANDS:
+                _serialPort.Write("timeDown\n");
+                if (_serialPort.BytesToRead > 0)
+                {
+                    string response = _serialPort.ReadLine();
+                    myText.text = response;
+                }
+                break;
+            default:
+                Debug.Log("State Error");
+                break;
+        }
+    }
+
     public void SubirTemperatura()
     {
         switch (taskState3)
@@ -200,6 +333,48 @@ public class CodigoSimulador : MonoBehaviour
                 break;
             case TaskStateTemperaturaBajar.COMMANDS:
                 _serialPort.Write("tempDown\n");
+                if (_serialPort.BytesToRead > 0)
+                {
+                    string response = _serialPort.ReadLine();
+                    myText.text = response;
+                }
+                break;
+            default:
+                Debug.Log("State Error");
+                break;
+        }
+    }
+    public void SubirVelocidadTemperatura()
+    {
+        switch (taskState3)
+        {
+            case TaskStateTemperaturaSubir.INIT:
+                taskState3 = TaskStateTemperaturaSubir.COMMANDS;
+                Debug.Log("WAIT COMMANDS");
+                break;
+            case TaskStateTemperaturaSubir.COMMANDS:
+                _serialPort.Write("tempSpeedUp\n");
+                if (_serialPort.BytesToRead > 0)
+                {
+                    string response = _serialPort.ReadLine();
+                    myText.text = response;
+                }
+                break;
+            default:
+                Debug.Log("State Error");
+                break;
+        }
+    }
+    public void BajarVelocidadTemperatura()
+    {
+        switch (taskState3)
+        {
+            case TaskStateTemperaturaSubir.INIT:
+                taskState3 = TaskStateTemperaturaSubir.COMMANDS;
+                Debug.Log("WAIT COMMANDS");
+                break;
+            case TaskStateTemperaturaSubir.COMMANDS:
+                _serialPort.Write("tempSpeedDown\n");
                 if (_serialPort.BytesToRead > 0)
                 {
                     string response = _serialPort.ReadLine();
