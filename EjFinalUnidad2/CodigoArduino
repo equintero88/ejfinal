@@ -169,22 +169,33 @@ void task() {
             else if (command == "out") {
                 taskState = TaskStates::OUT;
             }
+             else if (command == "start") {
+                advanceTime(hour, hourSpeed, temperature, rainLevel, tempIncrease, rainIncrease, tempChangeRate, rainChangeRate);
+            }
             else {
                 Serial.println("Comando no válido");
             }
         }
 
         // Avance automático del tiempo y cambios de temperatura y nivel de lluvia
-        advanceTime(hour, hourSpeed, temperature, rainLevel, tempIncrease, rainIncrease, tempChangeRate, rainChangeRate);
-        Serial.print("Hora del día: ");
-        Serial.println(hour);
-        Serial.print("Temperatura: ");
-        Serial.print(temperature);
-        Serial.print("°C (");
-        Serial.print(temperatureState(temperature));
-        Serial.println(")");
-        Serial.println("Nivel de lluvia actual: " + rainState(rainLevel));
-
+        static uint32_t lastRainChangeTime = 0;
+        if (millis() - lastRainChangeTime ==  1000) {
+          Serial.print("Hora del día: ");
+          Serial.println(hour);}
+        else if (millis() - lastRainChangeTime ==  2000) {
+          Serial.print("Temperatura: ");
+          Serial.print(temperature);
+          Serial.print("°C (");
+          Serial.print(temperatureState(temperature));
+          Serial.println(")");
+          }
+        else if (millis() - lastRainChangeTime ==  3000) {     
+             Serial.println("Nivel de lluvia actual: " + rainState(rainLevel));
+             }
+        else if(millis() - lastRainChangeTime ==  4000){
+          lastRainChangeTime = millis();
+          }
+                 
         ledState = !ledState;
         digitalWrite(LED_BUILTIN, ledState); // Cambia el estado del LED incorporado
 
