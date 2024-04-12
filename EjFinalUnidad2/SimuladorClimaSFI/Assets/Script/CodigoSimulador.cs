@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Threading.Tasks;
+using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine;
 
@@ -47,6 +48,7 @@ public class CodigoSimulador : MonoBehaviour
     private Vector2 offset;
     private Material material;
     public TextMeshProUGUI myText;
+    public Scene escena;
 
     void Start()
     {
@@ -113,6 +115,10 @@ public class CodigoSimulador : MonoBehaviour
                     SubirVelocidadTemperatura();
                 }
                 if (Input.GetKeyDown(KeyCode.L))
+                {
+                    BajarVelocidadTemperatura();
+                }
+                if (Input.GetKeyDown(KeyCode.M))
                 {
                     BajarVelocidadTemperatura();
                 }
@@ -385,6 +391,11 @@ public class CodigoSimulador : MonoBehaviour
                 Debug.Log("State Error");
                 break;
         }
+    }
+    public void IniciarEscena()
+    {
+        _serialPort.Write("`start\n");
+        SceneManager.LoadScene(escena.name);
     }
 }
 
