@@ -122,6 +122,10 @@ public class CodigoSimulador : MonoBehaviour
                 {
                     BajarVelocidadTemperatura();
                 }
+                if (Input.GetKeyDown(KeyCode.N))
+                {
+                    IniciarEscena();
+                }
                 if (_serialPort.BytesToRead > 0)
                 {
                     string response = _serialPort.ReadLine();
@@ -394,8 +398,13 @@ public class CodigoSimulador : MonoBehaviour
     }
     public void IniciarEscena()
     {
-        _serialPort.Write("`start\n");
-        SceneManager.LoadScene(escena.name);
+        _serialPort.Write("start\n");
+        //SceneManager.LoadScene(escena.name);
+        if (_serialPort.BytesToRead > 0)
+        {
+            string response = _serialPort.ReadLine();
+            myText.text = response;
+        }
     }
 }
 

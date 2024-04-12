@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51739209471eed64bac15e840c87cf04, type: 3}
-  m_Name: llovizna
+  m_Script: {fileID: 11500000, guid: ea84c3149b01c744d99efd149c982bf3, type: 3}
+  m_Name: Llovizna
   m_EditorClassIdentifier: 
-  personajeJugable: {fileID: 0}
-  imagen: {fileID: 21300000, guid: 2e3f600882f72464a8fd3ac8535741b0, type: 3}
+  lluviaaplicable: {fileID: 0}
+  imagen: {fileID: 21300000, guid: 5bc37b4119d5f6e4380b9f6e4e996abb, type: 3}
   nombre: Llovizna
