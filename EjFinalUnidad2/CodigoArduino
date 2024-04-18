@@ -8,11 +8,7 @@ String rainState(uint8_t rainLevel) {
     else if (rainLevel == 2) {
         return "Lluvia constante no muy intensa (6 mm/hora)";
     }
-    else if (rainLevel == 3)
-    {
-        return "LLuvia fuerte (12 mm/hora)";
-    }
-    else if (rainLevel == 4) {
+    else if (rainLevel == 3) {
         return "Aguacero (20 mm/hora)";
     }
     else {
@@ -36,6 +32,7 @@ String temperatureState(uint8_t temperature) {
 }
 
 void advanceTime(uint8_t& hour, uint8_t& hourSpeed, uint8_t& temperature, uint8_t& rainLevel, bool& tempIncrease, bool& rainIncrease, uint8_t& tempChangeRate, uint8_t& rainChangeRate) {
+  
     hour = (hour + 1) % 24; // Incrementa la hora y asegura que no exceda 24
     if (hour == 0) {
         tempIncrease = true; // Reinicia la dirección del cambio de temperatura
@@ -91,6 +88,22 @@ void advanceTime(uint8_t& hour, uint8_t& hourSpeed, uint8_t& temperature, uint8_
     }
 
     delay(hourSpeed * 1000);
+    if (millis() - lastRainChangeTime ==  1000) {
+          Serial.print("Hora del día: ");
+          Serial.println(hour);}
+        else if (millis() - lastRainChangeTime ==  2000) {
+          Serial.print("Temperatura: ");
+          Serial.print(temperature);
+          Serial.print("°C (");
+          Serial.print(temperatureState(temperature));
+          Serial.println(")");
+          }
+        else if (millis() - lastRainChangeTime ==  3000) {     
+             Serial.println("Nivel de lluvia actual: " + rainState(rainLevel));
+             }
+        else if(millis() - lastRainChangeTime ==  4000){
+          lastRainChangeTime = millis();
+          }
 }
 
 void task() {
@@ -159,7 +172,7 @@ void task() {
                 Serial.println("Cambio de temperatura: Disminución");
             }
             else if (command == "rainUp") {
-              if(rainLevel <= 3){
+              if(rainLevel <= 2){
                   rainLevel++; // Aumentar nivel de lluvia
                   Serial.println("Nivel de lluvia actual: " + rainState(rainLevel));
                 }
