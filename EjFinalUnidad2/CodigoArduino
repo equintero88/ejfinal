@@ -1,24 +1,4 @@
-String rainState(uint8_t rainLevel) {
-    if (rainLevel == 0) {
-        return "No hay lluvia (0 mm/hora)";
-    }
-    else if (rainLevel == 1) {
-        return "Llovizna (2.5 mm/hora <)";
-    }
-    else if (rainLevel == 2) {
-        return "Lluvia constante no muy intensa (6 mm/hora)";
-    }
-    else if (rainLevel == 3) {
-        return "Aguacero (20 mm/hora)";
-    }
-    else {
-        return "Valor de lluvia no válido";
-    }
-}
 
-String temperatureState(uint8_t temperature) {
-    if (temperature >= 14 && temperature <= 20) {
-        return "Frío";
     }
     else if (temperature >= 21 && temperature <= 26) {
         return "Templado";
@@ -34,6 +14,9 @@ String temperatureState(uint8_t temperature) {
 void advanceTime(uint8_t& hour, uint8_t& hourSpeed, uint8_t& temperature, uint8_t& rainLevel, bool& tempIncrease, bool& rainIncrease, uint8_t& tempChangeRate, uint8_t& rainChangeRate) {
   
     hour = (hour + 1) % 24; // Incrementa la hora y asegura que no exceda 24
+    if(hour == 7 || hour == 19){
+        Serial.print("cambioHora");
+     }
     if (hour == 0) {
         tempIncrease = true; // Reinicia la dirección del cambio de temperatura
         rainIncrease = true; // Reinicia la dirección del cambio del nivel de lluvia
@@ -198,6 +181,12 @@ void task() {
             else if (command == "rainDecrease") {
                 rainIncrease = false; // Aumentar nivel de lluvia
                 Serial.println("Cambio de nivel de lluvia: Aumento");
+            }
+            else if (command == "estadoLluvia") {
+                Serial.println(rainLevel);
+            }
+            else if (command == "estadoTemp") {
+                Serial.println(temperature);
             }
             else if (command == "out") {
                 taskState = TaskStates::OUT;

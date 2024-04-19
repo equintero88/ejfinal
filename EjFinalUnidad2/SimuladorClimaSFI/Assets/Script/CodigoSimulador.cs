@@ -77,67 +77,14 @@ public class CodigoSimulador : MonoBehaviour
                 Debug.Log("WAIT COMMANDS");
                 break;
             case TaskState.COMMANDS:
-                if (Input.GetKeyDown(KeyCode.A))
-                {
-                    SubirLluvia();
-                }
-                if (Input.GetKeyDown(KeyCode.B))
-                {
-                    BajarLluvia();
-                }
-                if (Input.GetKeyDown(KeyCode.C))
-                {
-                    SubirTemperatura();
-                }
-                if (Input.GetKeyDown(KeyCode.D))
-                {
-                    bajarTemperatura();
-                }
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    AumentoLluvia();
-                }
-                if (Input.GetKeyDown(KeyCode.F))
-                {
-                    DecrementoLluvia();
-                }
-                if (Input.GetKeyDown(KeyCode.G))
-                {
-                    AumentoVelocidadLluvia();
-                }
-                if (Input.GetKeyDown(KeyCode.H))
-                {
-                    DecrementoVelocidadLluvia();
-                }
-                if (Input.GetKeyDown(KeyCode.I))
-                {
-                    AumentoTiempo();
-                }
-                if (Input.GetKeyDown(KeyCode.J))
-                {
-                    DecrementoTiempo();
-                }
-                if (Input.GetKeyDown(KeyCode.K))
-                {
-                    SubirVelocidadTemperatura();
-                }
-                if (Input.GetKeyDown(KeyCode.L))
-                {
-                    BajarVelocidadTemperatura();
-                }
-                if (Input.GetKeyDown(KeyCode.M))
-                {
-                    BajarVelocidadTemperatura();
-                }
-                if (Input.GetKeyDown(KeyCode.N))
-                {
-                    IniciarEscena();
-                }
                 if (_serialPort.BytesToRead > 0)
                 {
                     string response = _serialPort.ReadLine();
                     myText.text = response;
-                }
+                    if(response == "cambioHora") {
+                        CambioHora();
+                    }
+        }
                 break;
             default:
                 Debug.Log("State Error");
@@ -620,6 +567,19 @@ public class CodigoSimulador : MonoBehaviour
             myText.text = response;
         }
 
+    }
+
+    public void CambioHora()
+    {
+        Scene escenaActual  = SceneManager.GetActiveScene();
+        if(escenaActual.name == "NoLluviaFrio")
+        {
+            SceneManager.LoadScene("NoLluviaFrio"); //cambiar por el nombre de la escena de noche
+        }
+        if (escenaActual.name == "NoLluviaFrio") //cambiar por el nombre de la escena de noche
+        {
+            SceneManager.LoadScene("NoLluviaFrio"); 
+        }
     }
 }
 
