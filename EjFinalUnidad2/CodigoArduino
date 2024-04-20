@@ -1,4 +1,27 @@
+#include <Arduino.h>
+#include <RaspberryPiPico.h>
 
+String rainState(uint8_t rainLevel) {
+    if (rainLevel == 0) {
+        return "No hay lluvia (0 mm/hora)";
+    }
+    else if (rainLevel == 1) {
+        return "Llovizna (2.5 mm/hora <)";
+    }
+    else if (rainLevel == 2) {
+        return "Lluvia constante no muy intensa (6 mm/hora)";
+    }
+    else if (rainLevel == 3) {
+        return "Aguacero (20 mm/hora)";
+    }
+    else {
+        return "Valor de lluvia no válido";
+    }
+}
+
+String temperatureState(uint8_t temperature) {
+    if (temperature >= 14 && temperature <= 20) {
+        return "Frío";
     }
     else if (temperature >= 21 && temperature <= 26) {
         return "Templado";
@@ -98,7 +121,7 @@ void task() {
     static TaskStates taskState = TaskStates::INIT;
     static uint8_t rainLevel = 0; // 0: No hay lluvia, 1: Lloviznando, 2: Lluvia fuerte
     static uint8_t hourSpeed = 5; // Velocidad de cambio de hora (segundos por hora)
-    static uint8_t temperature = 20; // Temperatura inicial (grados Celsius)
+    static uint8_t temperature = RP2040_GetTemp(); // Temperatura inicial (grados Celsius)
     static uint8_t hour = 0; // Hora del día en formato de 24 horas (0-23)
     static bool ledState = false; // Estado del LED
     static bool tempIncrease = true; // Dirección del cambio de temperatura (true: aumentar, false: disminuir)

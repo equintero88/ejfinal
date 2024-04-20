@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
+using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class ControlScene : MonoBehaviour
+public class Tcontrolescena : MonoBehaviour
 {
     public Sprite[] optionSprites;
     private int currentOptionIndex = 0;
@@ -32,16 +32,15 @@ public class ControlScene : MonoBehaviour
         currentOptionIndex = (currentOptionIndex - 1 + optionSprites.Length) % optionSprites.Length;
         UpdateOptionDisplay();
     }
-
     public void Continue()
     {
         // Almacena el índice de la opción seleccionada en PlayerPrefs
-        PlayerPrefs.SetInt("OptionIndex2", currentOptionIndex);
+        PlayerPrefs.SetInt("OptionIndex3", currentOptionIndex);
 
         // Guarda los cambios en PlayerPrefs
         PlayerPrefs.Save();
 
         // Cambia a la siguiente escena
-        SceneManager.LoadScene("CuartaEscena");
+        SceneManager.LoadScene("TerceraEscenaDeSeleccion");
     }
 }
